@@ -80,6 +80,7 @@ button {
 }
 
 .results {
+  overflow: hidden;
   box-sizing: border-box;
   width: 100%;
   position: absolute;
@@ -94,7 +95,8 @@ button {
   border-bottom: 1px solid #b8c2cc;
   display: flex;
   align-items: center;
-  padding: 0.7rem 0.6rem;
+  padding: 0.6rem;
+  font-weight: 700;
 }
 
 .result:last-child {
@@ -103,7 +105,6 @@ button {
 
 .result > .uom {
   text-align: right;
-  font-weight: 700;
 }
 
 .submit {

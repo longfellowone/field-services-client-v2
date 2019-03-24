@@ -4,14 +4,12 @@ import gql from 'graphql-tag';
 
 import Search from '../Search';
 
-export const MaterialList = ({ items, orderID }) => {
-  console.log(items);
-
+export const MaterialList = ({ items, orderID, addItem }) => {
   items = items = items.map(item => <Item key={item.productID} item={item} orderID={orderID} />);
 
   return (
     <>
-      <Search />
+      <Search addItem={addItem} />
       {items}
       <button className="submit">Send Order</button>
     </>
