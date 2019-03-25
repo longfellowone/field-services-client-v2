@@ -64,6 +64,7 @@ export const Search = ({ addItem }) => {
 
         const handleSubmit = e => {
           e.preventDefault();
+          setMenuHighlighted(false);
           setMenuOpen(false);
           setInput('');
           const product = data.products[highlightedIndex];

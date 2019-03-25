@@ -1,9 +1,11 @@
 import React from 'react';
-import { Query, Mutation } from 'react-apollo';
+import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
+// import { MaterialList } from '../components';
+
 import { MaterialList } from '../components/MaterialList';
 
-const FIND_ORDER = gql`
+export const FIND_ORDER = gql`
   query($id: ID!) {
     order(orderID: $id) {
       items {
@@ -16,12 +18,6 @@ const FIND_ORDER = gql`
   }
 `;
 
-const ADD_ORDER_ITEM = gql`
-  mutation($orderID: ID!, $productID: String!, $name: String!, $uom: String!) {
-    addOrderItem(input: { orderID: $orderID, productID: $productID, name: $name, uom: $uom })
-  }
-`;
-
 export const Order = ({ match }) => {
   const id = match.params.id;
   return (
@@ -30,17 +26,7 @@ export const Order = ({ match }) => {
         if (loading) return null;
         if (error) return `Error! ${error.message}`;
 
-        return (
-          <Mutation
-            mutation={ADD_ORDER_ITEM}
-            variables={{ orderID: id }}
-            refetchQueries={[{ query: FIND_ORDER, variables: { id } }]}
-          >
-            {(addItem, { error }) => (
-              <MaterialList items={data.order.items} orderID={match.params.id} addItem={addItem} />
-            )}
-          </Mutation>
-        );
+        return <MaterialList items={data.order.items} orderID={match.params.id} />;
       }}
     </Query>
   );
