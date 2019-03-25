@@ -59,7 +59,7 @@ const Quantity = ({ quantity, productID, orderID }) => {
       return func({ variables: { input: 0 } });
     }
 
-    setInput(e.target.value.replace(/^0+/, ''));
+    setInput(parseInt(e.target.value));
     func({ variables: { input: e.target.value } });
   };
 
@@ -91,7 +91,7 @@ const Quantity = ({ quantity, productID, orderID }) => {
       </Mutation>
     </div>
   ) : (
-    <div className="quantity" onClick={() => setEditable(true)}>
+    <div className="quantity" onFocus={() => setEditable(true)} tabIndex="0">
       {input}
     </div>
   );
