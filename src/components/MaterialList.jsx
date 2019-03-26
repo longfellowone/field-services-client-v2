@@ -19,7 +19,9 @@ export const MaterialList = ({ items, orderID }) => (
   >
     {(addItem, { error }) => (
       <>
-        <Search addItem={addItem} />
+        <div className="box">
+          <Search addItem={addItem} />
+        </div>
         {items.map(item => (
           <Item key={item.productID} item={item} orderID={orderID} />
         ))}
