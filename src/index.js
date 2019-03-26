@@ -9,6 +9,7 @@ import './index.css';
 import { Dashboard } from './views/Dashboard';
 import { Orders } from './views/Orders';
 import { Order } from './views/Order';
+import { Test } from './Test';
 
 const client = new ApolloClient({
   uri: 'http://192.168.0.104:8080/graphql',
@@ -18,13 +19,14 @@ const App = () => {
   return (
     <ApolloProvider client={client}>
       <Router>
-        <div className="container">
-          <Switch>
-            <Route path="/order/:id" component={Order} />
-            <Route path="/" component={Dashboard} exact />
-            <Route path="/:id" component={Orders} />
-          </Switch>
-        </div>
+        {/* <div className="container"> */}
+        <Switch>
+          <Route path="/test" component={Test} />
+          <Route path="/order/:id" component={Order} />
+          <Route path="/" component={Dashboard} exact />
+          <Route path="/:id" component={Orders} />
+        </Switch>
+        {/* </div> */}
       </Router>
     </ApolloProvider>
   );
