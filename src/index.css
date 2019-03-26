@@ -80,6 +80,7 @@ button {
 }
 
 .results {
+  cursor: pointer;
   overflow: hidden;
   box-sizing: border-box;
   width: 100%;

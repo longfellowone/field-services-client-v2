@@ -1,7 +1,6 @@
 import React from 'react';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
-// import { MaterialList } from '../components';
 
 import { MaterialList } from '../components/MaterialList';
 

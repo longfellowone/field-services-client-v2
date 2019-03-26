@@ -102,6 +102,7 @@ export const Search = ({ addItem }) => {
                     placeholder="Search for an item..."
                     tabIndex="0"
                     type="search"
+                    autoFocus
                   />
                 </div>
               </form>
