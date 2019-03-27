@@ -15,11 +15,13 @@ body {
 
 .container {
   overflow: hidden;
-  max-width: 400px;
+  max-width: 576px;
   margin: 0 auto;
+  padding: 0 0.3rem;
 }
 
 .overlay {
+  padding: 0;
   position: fixed;
   width: 100%;
   height: 100%;
