@@ -33,12 +33,21 @@ const Search = () => {
     <>
       <div className={menuOpen ? 'overlay' : 'flex'} onTouchStart={() => inputRef.current.blur()}>
         <div className={menuOpen ? 'container' : 'flex'}>
-          <div className={menuOpen ? 'box search' : 'flex'}>
-            <div className="back" style={{ display: !menuOpen ? 'none' : '' }}>
+          <div className={menuOpen ? 'search' : 'flex'}>
+            <div className="back" style={{ display: !menuOpen ? 'none' : 'none' }}>
               B
             </div>
-            <input onFocus={handleFocus} ref={inputRef} onTouchStart={e => e.stopPropagation()} />
-            <div className="close" style={{ display: !menuOpen ? 'none' : '' }}>
+            <input
+              ref={inputRef}
+              className="searchinput"
+              onFocus={handleFocus}
+              onTouchStart={e => e.stopPropagation()}
+              maxLength="50"
+              placeholder="Search for an item..."
+              tabIndex="0"
+              type="search"
+            />
+            <div className="close" style={{ display: !menuOpen ? 'none' : 'none' }}>
               X
             </div>
           </div>
@@ -55,7 +64,7 @@ const Results = ({ handleSubmit }) => {
   let results = [];
   for (let i = 0; i < 10; i++) {
     results.push(
-      <div key={Math.random()} className="result" onClick={handleSubmit}>
+      <div key={Math.random()} className="result" onMouseDown={handleSubmit}>
         <div className="name">Result</div>
         <div className="uom">ft</div>
       </div>,
@@ -68,23 +77,64 @@ const Items = () => {
   let items = [];
   for (let i = 0; i < 15; i++) {
     items.push(
-      <div key={Math.random()} className="item">
+      <div key={Math.random()} className="box">
         <div className="name">Item</div>
-        <div className="quantity">100</div>
+        <QuantityInput quantity="100" />
         <div className="uom">ft</div>
       </div>,
     );
   }
-  for (let i = 0; i < 15; i++) {
-    items.push(
-      <div key={Math.random()} className="item">
-        <div className="name">Item</div>
-        <div className="quantity">
-          <input />
-        </div>
-        <div className="uom">ft</div>
-      </div>,
-    );
-  }
+
   return <>{items}</>;
+};
+
+const QuantityInput = ({ quantity, productID, orderID }) => {
+  const [input, setInput] = useState(quantity);
+  const [editable, setEditable] = useState(false);
+
+  const focusInput = input => input && input.focus();
+
+  const handleBlur = (e, func) => {
+    setEditable(false);
+
+    console.log(isNaN(e.target.value));
+
+    if (e.target.value === '' || isNaN(e.target.value)) {
+      setInput(0);
+      return;
+      // return func({ variables: { input: 0 } });
+    }
+
+    setInput(parseInt(e.target.value));
+    // func({ variables: { input: e.target.value } });
+  };
+
+  const handleChange = e => {
+    setInput(e.target.value);
+  };
+
+  const handleFocus = e => {
+    e.preventDefault();
+    e.target.select();
+  };
+
+  return editable ? (
+    <div className="quantity">
+      <input
+        ref={focusInput}
+        value={input}
+        onChange={handleChange}
+        onFocus={handleFocus}
+        onBlur={e => handleBlur(e)}
+        pattern="[0-9]*"
+        type="tel"
+        autoComplete="off"
+        maxLength="6"
+      />
+    </div>
+  ) : (
+    <div className="quantity" onFocus={() => setEditable(true)} tabIndex="0">
+      {input}
+    </div>
+  );
 };
