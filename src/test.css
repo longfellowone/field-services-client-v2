@@ -15,6 +15,8 @@ body {
 
 .container {
   overflow: hidden;
+  max-width: 400px;
+  margin: 0 auto;
 }
 
 .overlay {
@@ -25,7 +27,6 @@ body {
   left: 0px;
   background: white;
   z-index: 989;
-  border-radius: 0;
   overflow: auto;
 }
 
@@ -33,9 +34,89 @@ input {
   font-size: inherit;
   font-family: inherit;
   background: grey;
+  outline: none;
+  border: none;
+  border-radius: 0;
   width: 100%;
   padding: 0;
+  margin: 0;
 }
 
-.results {
+/* input:focus {
+  background: purple;
+} */
+
+/* .results {
+} */
+
+.result {
+  display: flex;
+  flex: 1;
+}
+
+.result > .name {
+  flex-grow: 1;
+  background: blue;
+}
+
+.result > .uom {
+  min-width: 1rem;
+  background: pink;
+}
+
+.item {
+  height: 2rem;
+  margin-top: 0.3rem;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  box-sizing: border-box;
+  background: green;
+}
+
+.item > .name {
+  flex-grow: 1;
+  background: blue;
+}
+
+.item > .quantity {
+  background: pink;
+  padding-right: 0.25rem;
+}
+
+.item > .uom {
+  min-width: 1rem;
+  background: yellow;
+}
+
+.item > .quantity > input {
+  max-width: 5rem;
+  background: red;
+}
+
+.box {
+  margin-top: 0.3rem;
+  height: 2rem;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  box-sizing: border-box;
+  background: green;
+}
+
+.flex {
+  display: flex;
+  flex: 1;
+}
+
+.search {
+  background: purple;
+  border-bottom: 1px solid black;
+  /* Use same height and margin as box class */
+}
+
+.search > .back {
+}
+
+.search > .close {
 }

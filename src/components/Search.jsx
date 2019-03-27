@@ -74,8 +74,6 @@ export const Search = ({ addItem }) => {
           addItem({ variables: { productID, name, uom } });
         };
 
-        const focusInput = input => input && input.focus();
-
         const results = data.products.map((product, index) => (
           <Result
             key={product.ID}
@@ -88,30 +86,32 @@ export const Search = ({ addItem }) => {
           />
         ));
 
+        const handleClick = () => {
+          setMenuOpen(true);
+        };
+
         return (
           <>
-            <div className={'box ' + (menuOpen ? 'menuopen' : '')}>
+            <div className={menuOpen ? 'menuopen' : ''}>
               <form action="." onSubmit={handleSubmit}>
                 <div className="search">
                   <input
-                    ref={focusInput}
+                    className="searchinput"
                     value={input}
                     onChange={handleChange}
                     onKeyDown={handleKeyDown}
-                    className="w-full bg-transparent appearance-none text-black pl-3 py-2 border-none m-0 outline-none tap-none sm:text-md"
+                    onClick={handleClick}
+                    onFocus={handleClick}
                     placeholder="Search for an item..."
                     tabIndex="0"
                     type="search"
-                    autoFocus
                   />
+                  <div className={menuOpen ? 'results' : ''}>
+                    {menuOpen && <div onMouseLeave={handleMouseLeave}>{results}</div>}
+                  </div>
                 </div>
               </form>
             </div>
-            {menuOpen && (
-              <div className="results" onMouseLeave={handleMouseLeave}>
-                {results}
-              </div>
-            )}
           </>
         );
       }}
