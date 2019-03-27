@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 import './test.css';
 
@@ -28,6 +28,10 @@ const Search = () => {
     setMenuOpen(false);
     document.body.classList.remove('noscrollbody');
   };
+
+  useEffect(() => {
+    return () => document.body.classList.remove('noscrollbody');
+  }, []);
 
   return (
     <>
