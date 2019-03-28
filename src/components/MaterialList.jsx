@@ -25,7 +25,7 @@ export const MaterialList = ({ items, orderID }) => (
         {items.map(item => (
           <Item key={item.productID} item={item} orderID={orderID} />
         ))}
-        <button className="submit">Send Order</button>
+        {/* <button className="submit">Send Order</button> */}
       </>
     )}
   </Mutation>
@@ -33,7 +33,7 @@ export const MaterialList = ({ items, orderID }) => (
 
 const Item = ({ item: { productID, name, uom, quantityRequested }, orderID }) => {
   return (
-    <div className="box item">
+    <div className="box">
       <div className="name">{name}</div>
       <Quantity quantity={quantityRequested} productID={productID} orderID={orderID} />
       <div className="uom">{uom}</div>
@@ -53,48 +53,43 @@ const Quantity = ({ quantity, productID, orderID }) => {
 
   const focusInput = input => input && input.focus();
 
-  const handleBlur = (e, func) => {
+  const handleChange = e => setInput(e.target.value);
+
+  const handleSubmit = (e, func) => {
+    e.preventDefault();
+    e.target.blur();
     setEditable(false);
 
-    if (e.target.value === '') {
+    if (input === '' || isNaN(input)) {
       setInput(0);
       return func({ variables: { input: 0 } });
     }
 
-    setInput(parseInt(e.target.value));
-    func({ variables: { input: e.target.value } });
-  };
-
-  const handleChange = e => {
-    setInput(e.target.value);
-  };
-
-  const handleFocus = e => {
-    e.preventDefault();
-    e.target.select();
+    setInput(parseInt(input, 10));
+    func({ variables: { input: parseInt(input, 10) } });
   };
 
   return editable ? (
-    <div className="quantity">
-      <Mutation mutation={MODIFY_REQUESTED_QUANTITY} variables={{ orderID, productID }}>
-        {(modifyQuantity, { error }) => (
+    <Mutation mutation={MODIFY_REQUESTED_QUANTITY} variables={{ orderID, productID }}>
+      {(modifyQuantity, { error }) => (
+        <form className="quantity" onSubmit={e => handleSubmit(e, modifyQuantity)}>
           <input
+            ref={focusInput}
             value={input}
             onChange={handleChange}
-            onFocus={handleFocus}
-            onBlur={e => handleBlur(e, modifyQuantity)}
-            ref={focusInput}
+            onFocus={e => e.target.select()}
+            onBlur={e => handleSubmit(e, modifyQuantity)}
             pattern="[0-9]*"
             type="tel"
             autoComplete="off"
             maxLength="6"
           />
-        )}
-      </Mutation>
-    </div>
+        </form>
+      )}
+    </Mutation>
   ) : (
     <div className="quantity" onFocus={() => setEditable(true)} tabIndex="0">
-      {input}
+      {input.toLocaleString()}
     </div>
   );
 };
