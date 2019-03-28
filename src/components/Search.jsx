@@ -53,6 +53,11 @@ export const Search = ({ addItem }) => {
         //   }
         // };
 
+        // const handleMouseLeave = e => {
+        //   e.preventDefault();
+        //   setMenuHighlighted(false);
+        // };
+
         const handleChange = e => {
           e.preventDefault();
           setMenuOpen(true);
@@ -63,10 +68,10 @@ export const Search = ({ addItem }) => {
           // }
         };
 
-        // const handleMouseLeave = e => {
-        //   e.preventDefault();
-        //   setMenuHighlighted(false);
-        // };
+        const handleFocus = () => {
+          setMenuOpen(true);
+          document.body.classList.add('noscrollbody');
+        };
 
         const handleSubmit = (e, index) => {
           e.preventDefault();
@@ -77,11 +82,6 @@ export const Search = ({ addItem }) => {
           const uom = product.uom;
           addItem({ variables: { productID, name, uom } });
           closeSearch();
-        };
-
-        const handleFocus = () => {
-          setMenuOpen(true);
-          document.body.classList.add('noscrollbody');
         };
 
         const closeSearch = () => {
@@ -105,7 +105,7 @@ export const Search = ({ addItem }) => {
         return (
           <div
             className={menuOpen ? 'overlay' : 'flex'}
-            onTouchStart={() => inputRef.current.blur()}
+            onTouchMove={() => inputRef.current.blur()}
           >
             <div className={menuOpen ? 'container' : 'flex'}>
               <form
@@ -117,7 +117,6 @@ export const Search = ({ addItem }) => {
                   ref={inputRef}
                   value={input}
                   className="searchinput"
-                  onTouchStart={e => e.stopPropagation()}
                   onChange={handleChange}
                   onFocus={handleFocus}
                   maxLength="50"
@@ -128,7 +127,6 @@ export const Search = ({ addItem }) => {
                 <div
                   className="delete"
                   style={{ display: menuOpen ? '' : 'none' }}
-                  onTouchStart={e => e.stopPropagation()}
                   onMouseDown={closeSearch}
                 >
                   <img src="https://img.icons8.com/ios/15/000000/delete-sign.png" alt="delete" />
@@ -190,7 +188,7 @@ const Result = ({
       // style={highlightedIndex === index ? { background: '#f1f5f8' } : {}}
       // onMouseEnter={handleMouseEnter}
       // onClick={handleSubmit}
-      onClick={e => handleSubmit(e, index)}
+      onMouseDown={e => handleSubmit(e, index)}
     >
       <div className="name">{taggedResult}</div>
       <div className="uom">{uom}</div>
