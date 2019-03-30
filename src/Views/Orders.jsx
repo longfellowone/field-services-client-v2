@@ -27,7 +27,7 @@ const Orders = ({ match, auth }) => {
       <Query query={FIND_ORDERS} variables={{ id: match.params.id }}>
         {({ loading, error, data }) => {
           if (loading) return null;
-          if (error) return `Error! ${error.message}`;
+          if (error) return null;
 
           return <OrderList orders={data.projectOrders} />;
         }}

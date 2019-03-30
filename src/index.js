@@ -35,9 +35,23 @@ const client = new ApolloClient({
     const token = auth.getAccessToken();
     operation.setContext({
       headers: {
-        authorization: token ? `Bearer ${token}` : 'empty',
+        authorization: token ? `Bearer ${auth.getAccessToken()}` : '',
       },
     });
+  },
+  onError: ({ graphQLErrors, networkError }) => {
+    if (graphQLErrors) {
+      console.log(graphQLErrors);
+      graphQLErrors.map(({ message, locations, path }) =>
+        console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`),
+      );
+    }
+    if (networkError) {
+      console.log(`[Network error]: ${networkError.statusCode}`);
+      if (networkError.statusCode === 401) {
+        history.push('/');
+      }
+    }
   },
 });
 
