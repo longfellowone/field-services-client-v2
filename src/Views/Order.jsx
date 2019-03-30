@@ -2,7 +2,7 @@ import React from 'react';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 
-import { MaterialList } from '../components/MaterialList';
+import MaterialList from '../Components/MaterialList';
 
 export const FIND_ORDER = gql`
   query($id: ID!) {
@@ -17,7 +17,7 @@ export const FIND_ORDER = gql`
   }
 `;
 
-export const Order = ({ match }) => {
+const Order = ({ match }) => {
   const id = match.params.id;
   return (
     <Query query={FIND_ORDER} variables={{ id }}>

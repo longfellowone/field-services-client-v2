@@ -2,7 +2,7 @@ import React from 'react';
 import Moment from 'react-moment';
 import { Link } from 'react-router-dom';
 
-export const OrderList = ({ orders }) => {
+const OrderList = ({ orders }) => {
   return orders.map(order => <OrderListItem key={order.orderID} order={order} />);
 };
 
@@ -15,3 +15,5 @@ const OrderListItem = ({ order: { orderID, sentDate } }) => {
     </div>
   );
 };
+
+export default OrderList;

@@ -3,7 +3,7 @@ import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 
 import Search from './Search';
-import { FIND_ORDER } from '../views/Order';
+import { FIND_ORDER } from '../Views/Order';
 
 const ADD_ORDER_ITEM = gql`
   mutation($orderID: ID!, $productID: String!, $name: String!, $uom: String!) {
@@ -11,7 +11,7 @@ const ADD_ORDER_ITEM = gql`
   }
 `;
 
-export const MaterialList = ({ items, orderID }) => (
+const MaterialList = ({ items, orderID }) => (
   <Mutation
     mutation={ADD_ORDER_ITEM}
     variables={{ orderID }}
@@ -93,3 +93,5 @@ const Quantity = ({ quantity, productID, orderID }) => {
     </div>
   );
 };
+
+export default MaterialList;
