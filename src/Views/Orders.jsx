@@ -13,15 +13,27 @@ const FIND_ORDERS = gql`
   }
 `;
 
-const Orders = ({ match }) => (
-  <Query query={FIND_ORDERS} variables={{ id: match.params.id }}>
-    {({ loading, error, data }) => {
-      if (loading) return null;
-      if (error) return `Error! ${error.message}`;
+const Orders = ({ match, auth }) => {
+  const { isAuthenticated } = auth;
+  return (
+    <>
+      {isAuthenticated() && (
+        <h4>
+          <div style={{ cursor: 'pointer', color: 'blue' }} onClick={auth.logout}>
+            Logout
+          </div>
+        </h4>
+      )}
+      <Query query={FIND_ORDERS} variables={{ id: match.params.id }}>
+        {({ loading, error, data }) => {
+          if (loading) return null;
+          if (error) return `Error! ${error.message}`;
 
-      return <OrderList orders={data.projectOrders} />;
-    }}
-  </Query>
-);
+          return <OrderList orders={data.projectOrders} />;
+        }}
+      </Query>
+    </>
+  );
+};
 
 export default Orders;

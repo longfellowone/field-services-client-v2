@@ -38,17 +38,17 @@ const App = () => {
       <Router history={history}>
         <div className="container">
           <Switch>
+            <Route
+              path="/callback"
+              render={props => {
+                handleAuthentication(props);
+                return <Callback {...props} />;
+              }}
+            />
             <Route path="/order/:id" component={Order} />
-            <Route path="/:id" component={Orders} />
+            <Route path="/:id" render={props => <Orders auth={auth} {...props} />} />
             <Route path="/" render={props => <Dashboard auth={auth} {...props} exact />} />
           </Switch>
-          <Route
-            path="/callback"
-            render={props => {
-              handleAuthentication(props);
-              return <Callback {...props} />;
-            }}
-          />
         </div>
       </Router>
     </ApolloProvider>
