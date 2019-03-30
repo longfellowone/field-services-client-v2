@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 
 const Dashboard = ({ auth }) => {
   const { isAuthenticated } = auth;
+
   return (
     <div className="container">
       {isAuthenticated() && (

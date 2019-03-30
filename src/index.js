@@ -18,6 +18,7 @@ const AUTH_CONFIG = {
   domain: 'dev-vqglrbz9.auth0.com',
   clientId: '4Bl87j57GloRtm1GlyZhwEFA3jlDlv66',
   callbackUrl: 'http://localhost:3000/callback',
+  audience: 'http://192.168.0.104:8080/graphql',
 };
 
 const auth = Auth({ AUTH_CONFIG });
@@ -30,6 +31,14 @@ const handleAuthentication = ({ location }) => {
 
 const client = new ApolloClient({
   uri: 'http://192.168.0.104:8080/graphql',
+  request: async operation => {
+    const token = auth.getAccessToken();
+    operation.setContext({
+      headers: {
+        authorization: token ? `Bearer ${token}` : 'empty',
+      },
+    });
+  },
 });
 
 const App = () => {

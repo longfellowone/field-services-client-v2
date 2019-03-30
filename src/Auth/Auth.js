@@ -2,16 +2,18 @@ import history from '../history';
 import auth0 from 'auth0-js';
 
 const Auth = ({ AUTH_CONFIG }) => {
-  let accessToken;
-  let idToken;
+  let accessToken; // For API use
+  let idToken; // For application use (contains user information)
   let expiresAt;
+  let userProfile;
 
   const auth = new auth0.WebAuth({
     domain: AUTH_CONFIG.domain,
     clientID: AUTH_CONFIG.clientId,
     redirectUri: AUTH_CONFIG.callbackUrl,
+    audience: AUTH_CONFIG.audience,
     responseType: 'token id_token',
-    scope: 'openid',
+    scope: 'openid manage:orders', // profile
   });
 
   const login = () => auth.authorize();
@@ -20,6 +22,7 @@ const Auth = ({ AUTH_CONFIG }) => {
     auth.parseHash((err, authResult) => {
       if (authResult && authResult.accessToken && authResult.idToken) {
         setSession(authResult);
+        console.log(authResult);
       } else if (err) {
         history.replace('/');
         console.log(err);
@@ -29,6 +32,15 @@ const Auth = ({ AUTH_CONFIG }) => {
 
   const getAccessToken = () => accessToken;
   const getIdToken = () => idToken;
+
+  const getProfile = cb => {
+    auth.client.userInfo(accessToken, (err, profile) => {
+      if (profile) {
+        userProfile = profile;
+      }
+      cb(err, profile);
+    });
+  };
 
   const setSession = authResult => {
     expiresAt = authResult.expiresIn * 1000 + new Date().getTime();
@@ -51,12 +63,17 @@ const Auth = ({ AUTH_CONFIG }) => {
     });
 
   const logout = () => {
+    auth.logout({
+      returnTo: 'http://localhost:3000/',
+      clientId: AUTH_CONFIG.clientId,
+    });
+
     accessToken = null;
     idToken = null;
     expiresAt = 0;
+    userProfile = null;
 
     localStorage.removeItem('isLoggedIn');
-    history.replace('/');
   };
 
   const isAuthenticated = () => new Date().getTime() < expiresAt;
@@ -66,6 +83,8 @@ const Auth = ({ AUTH_CONFIG }) => {
     handleAuthentication,
     getAccessToken,
     getIdToken,
+    getProfile,
+    userProfile,
     renewSession,
     logout,
     isAuthenticated,
