@@ -5,7 +5,7 @@ import gql from 'graphql-tag';
 const SEARCH_QUERY = gql`
   query($input: String!) {
     products(name: $input) {
-      ID
+      id
       name
       uom
       matchedIndexes
@@ -77,7 +77,7 @@ export const Search = ({ addItem }) => {
           e.preventDefault();
           // setMenuHighlighted(false);
           const product = data.products[index];
-          const productID = product.ID;
+          const productID = product.id;
           const name = product.name;
           const uom = product.uom;
           addItem({ variables: { productID, name, uom } });
@@ -92,7 +92,7 @@ export const Search = ({ addItem }) => {
 
         const results = data.products.map((product, index) => (
           <Result
-            key={product.ID}
+            key={product.id}
             result={product}
             handleSubmit={handleSubmit}
             index={index}

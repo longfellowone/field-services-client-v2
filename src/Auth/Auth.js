@@ -13,7 +13,7 @@ const Auth = ({ AUTH_CONFIG }) => {
     redirectUri: AUTH_CONFIG.callbackUrl,
     audience: AUTH_CONFIG.audience,
     responseType: 'token id_token',
-    scope: 'openid manage:orders', // profile
+    scope: 'openid create:orders manage:orders', // profile
   });
 
   const login = () => auth.authorize();
@@ -22,7 +22,6 @@ const Auth = ({ AUTH_CONFIG }) => {
     auth.parseHash((err, authResult) => {
       if (authResult && authResult.accessToken && authResult.idToken) {
         setSession(authResult);
-        console.log(authResult);
       } else if (err) {
         history.replace('/');
         console.log(err);
@@ -47,8 +46,8 @@ const Auth = ({ AUTH_CONFIG }) => {
     accessToken = authResult.accessToken;
     idToken = authResult.idToken;
 
-    localStorage.setItem('isLoggedIn', 'true');
     history.replace('/');
+    // localStorage.setItem('isLoggedIn', 'true');
   };
 
   const renewSession = () =>
@@ -73,7 +72,8 @@ const Auth = ({ AUTH_CONFIG }) => {
     expiresAt = 0;
     userProfile = null;
 
-    localStorage.removeItem('isLoggedIn');
+    // history.replace('/');
+    // localStorage.removeItem('isLoggedIn');
   };
 
   const isAuthenticated = () => new Date().getTime() < expiresAt;

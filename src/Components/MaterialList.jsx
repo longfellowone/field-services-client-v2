@@ -3,39 +3,42 @@ import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 
 import Search from './Search';
-import { FIND_ORDER } from '../Views/Order';
+import { ORDER_FRAGMENT } from '../fragments';
 
 const ADD_ORDER_ITEM = gql`
   mutation($orderID: ID!, $productID: String!, $name: String!, $uom: String!) {
-    addOrderItem(input: { orderID: $orderID, productID: $productID, name: $name, uom: $uom })
+    addOrderItem(input: { id: $orderID, productID: $productID, name: $name, uom: $uom }) {
+      ...orderFragment
+    }
   }
+  ${ORDER_FRAGMENT}
 `;
 
-const MaterialList = ({ items, orderID }) => (
-  <Mutation
-    mutation={ADD_ORDER_ITEM}
-    variables={{ orderID }}
-    refetchQueries={[{ query: FIND_ORDER, variables: { id: orderID } }]}
-  >
-    {(addItem, { error }) => (
-      <>
-        <div className="box">
-          <Search addItem={addItem} />
-        </div>
-        {items.map(item => (
-          <Item key={item.productID} item={item} orderID={orderID} />
-        ))}
-        {/* <button className="submit">Send Order</button> */}
-      </>
-    )}
-  </Mutation>
-);
+const MaterialList = ({ items, orderID }) => {
+  items.sort((a, b) => b.dateAdded - a.dateAdded);
 
-const Item = ({ item: { productID, name, uom, quantityRequested }, orderID }) => {
+  return (
+    <Mutation mutation={ADD_ORDER_ITEM} variables={{ orderID }}>
+      {(addItem, { error }) => (
+        <>
+          <div className="box">
+            <Search addItem={addItem} />
+          </div>
+          {items.map(item => (
+            <Item key={item.id} item={item} orderID={orderID} />
+          ))}
+          {/* <button className="submit">Send Order</button> */}
+        </>
+      )}
+    </Mutation>
+  );
+};
+
+const Item = ({ item: { id, name, uom, quantityRequested }, orderID }) => {
   return (
     <div className="box">
       <div className="name">{name}</div>
-      <Quantity quantity={quantityRequested} productID={productID} orderID={orderID} />
+      <Quantity quantity={quantityRequested} productID={id} orderID={orderID} />
       <div className="uom">{uom}</div>
     </div>
   );
@@ -43,8 +46,11 @@ const Item = ({ item: { productID, name, uom, quantityRequested }, orderID }) =>
 
 const MODIFY_REQUESTED_QUANTITY = gql`
   mutation($orderID: ID!, $productID: String!, $input: Int!) {
-    modifyRequestedQuantity(input: { orderID: $orderID, productID: $productID, quantity: $input })
+    modifyRequestedQuantity(input: { id: $orderID, productID: $productID, quantity: $input }) {
+      ...orderFragment
+    }
   }
+  ${ORDER_FRAGMENT}
 `;
 
 const Quantity = ({ quantity, productID, orderID }) => {

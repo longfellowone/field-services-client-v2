@@ -47,10 +47,10 @@ const client = new ApolloClient({
       );
     }
     if (networkError) {
-      console.log(`[Network error]: ${networkError.statusCode}`);
-      if (networkError.statusCode === 401) {
-        history.push('/');
-      }
+      console.log(`[Network error]: ${networkError}`);
+      // if (networkError.statusCode === 401 || 403) {
+      //   history.push('/');
+      // }
     }
   },
 });

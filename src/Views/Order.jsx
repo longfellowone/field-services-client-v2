@@ -3,18 +3,15 @@ import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 
 import MaterialList from '../Components/MaterialList';
+import { ORDER_FRAGMENT } from '../fragments';
 
-export const FIND_ORDER = gql`
+const FIND_ORDER = gql`
   query($id: ID!) {
-    order(orderID: $id) {
-      items {
-        name
-        productID
-        uom
-        quantityRequested
-      }
+    order(id: $id) {
+      ...orderFragment
     }
   }
+  ${ORDER_FRAGMENT}
 `;
 
 const Order = ({ match }) => {
@@ -25,7 +22,7 @@ const Order = ({ match }) => {
         if (loading) return null;
         if (error) return `Error! ${error.message}`;
 
-        return <MaterialList items={data.order.items} orderID={match.params.id} />;
+        return <MaterialList items={data.order.items} orderID={id} />;
       }}
     </Query>
   );

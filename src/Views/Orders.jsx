@@ -6,8 +6,8 @@ import OrderList from '../Components/OrderList';
 
 const FIND_ORDERS = gql`
   query($id: ID!) {
-    projectOrders(projectID: $id) {
-      orderID
+    projectOrders(id: $id) {
+      id
       sentDate
     }
   }
@@ -15,6 +15,8 @@ const FIND_ORDERS = gql`
 
 const Orders = ({ match, auth }) => {
   const { isAuthenticated } = auth;
+  const id = match.params.id;
+
   return (
     <>
       {isAuthenticated() && (
@@ -24,12 +26,12 @@ const Orders = ({ match, auth }) => {
           </div>
         </h4>
       )}
-      <Query query={FIND_ORDERS} variables={{ id: match.params.id }}>
+      <Query query={FIND_ORDERS} variables={{ id }}>
         {({ loading, error, data }) => {
           if (loading) return null;
-          if (error) return null;
+          if (error) return `Error! ${error.message}`;
 
-          return <OrderList orders={data.projectOrders} />;
+          return <OrderList orders={data.projectOrders} projectID={id} />;
         }}
       </Query>
     </>
