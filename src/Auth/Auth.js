@@ -4,7 +4,8 @@ import auth0 from 'auth0-js';
 const Auth = ({ AUTH_CONFIG }) => {
   let accessToken; // For API use
   let idToken; // For application use (contains user information)
-  let expiresAt;
+  let expiresAt = 0;
+  let tokenRenewalTimeout;
   let userProfile;
 
   const auth = new auth0.WebAuth({
@@ -14,6 +15,7 @@ const Auth = ({ AUTH_CONFIG }) => {
     audience: AUTH_CONFIG.audience,
     responseType: 'token id_token',
     scope: 'openid create:orders manage:orders', // profile
+    // promp: 'none',
   });
 
   const login = () => auth.authorize();
@@ -41,25 +43,40 @@ const Auth = ({ AUTH_CONFIG }) => {
     });
   };
 
-  const setSession = authResult => {
+  const setSession = (authResult, location) => {
     expiresAt = authResult.expiresIn * 1000 + new Date().getTime();
     accessToken = authResult.accessToken;
     idToken = authResult.idToken;
+    localStorage.setItem('isLoggedIn', 'true');
 
-    history.replace('/');
-    // localStorage.setItem('isLoggedIn', 'true');
+    scheduleRenewal();
+    console.log('here', location);
+    // history.push('/');
+    // history.replace('/');
+    // history.replace(location);
   };
 
-  const renewSession = () =>
+  const renewSession = location =>
     auth.checkSession({}, (err, authResult) => {
       if (authResult && authResult.accessToken && authResult.idToken) {
-        setSession(authResult);
+        setSession(authResult, location);
       } else if (err) {
         logout();
         console.log(err);
         alert(`Could not get a new token (${err.error}: ${err.error_description}).`);
       }
     });
+
+  const scheduleRenewal = () => {
+    const timeout = expiresAt - Date.now();
+    if (timeout > 0) {
+      tokenRenewalTimeout = setTimeout(() => {
+        renewSession();
+      }, timeout);
+    }
+  };
+
+  const getExpiryDate = () => JSON.stringify(new Date(this.expiresAt));
 
   const logout = () => {
     auth.logout({
@@ -71,19 +88,39 @@ const Auth = ({ AUTH_CONFIG }) => {
     idToken = null;
     expiresAt = 0;
     userProfile = null;
+    clearTimeout(tokenRenewalTimeout);
 
     // history.replace('/');
-    // localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('isLoggedIn');
   };
 
   const isAuthenticated = () => new Date().getTime() < expiresAt;
 
+  const silentAuth = () => {
+    return new Promise((resolve, reject) => {
+      auth.checkSession({}, (err, authResult) => {
+        if (authResult && authResult.accessToken && authResult.idToken) {
+          setSession(authResult);
+          console.log('good');
+          resolve();
+        } else if (err) {
+          logout();
+          console.log(err);
+          alert(`Could not get a new token (${err.error}: ${err.error_description}).`);
+          reject();
+        }
+      });
+    });
+  };
+
   return {
+    silentAuth,
     login,
     handleAuthentication,
     getAccessToken,
     getIdToken,
     getProfile,
+    getExpiryDate,
     userProfile,
     renewSession,
     logout,

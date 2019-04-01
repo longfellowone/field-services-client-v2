@@ -17,23 +17,28 @@ const Orders = ({ match, auth }) => {
   const { isAuthenticated } = auth;
   const id = match.params.id;
 
+  console.log('hi');
+
   return (
     <>
       {isAuthenticated() && (
-        <h4>
-          <div style={{ cursor: 'pointer', color: 'blue' }} onClick={auth.logout}>
-            Logout
-          </div>
-        </h4>
-      )}
-      <Query query={FIND_ORDERS} variables={{ id }}>
-        {({ loading, error, data }) => {
-          if (loading) return null;
-          if (error) return `Error! ${error.message}`;
+        <>
+          <h4>
+            <div style={{ cursor: 'pointer', color: 'blue' }} onClick={auth.logout}>
+              Logout
+            </div>
+          </h4>
 
-          return <OrderList orders={data.projectOrders} projectID={id} />;
-        }}
-      </Query>
+          <Query query={FIND_ORDERS} variables={{ id }}>
+            {({ loading, error, data }) => {
+              if (loading) return null;
+              if (error) return `Error! ${error.message}`;
+
+              return <OrderList orders={data.projectOrders} projectID={id} />;
+            }}
+          </Query>
+        </>
+      )}
     </>
   );
 };

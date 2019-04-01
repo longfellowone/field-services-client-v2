@@ -14,17 +14,23 @@ const FIND_ORDER = gql`
   ${ORDER_FRAGMENT}
 `;
 
-const Order = ({ match }) => {
+const Order = ({ match, auth }) => {
   const id = match.params.id;
-  return (
-    <Query query={FIND_ORDER} variables={{ id }}>
-      {({ loading, error, data }) => {
-        if (loading) return null;
-        if (error) return `Error! ${error.message}`;
+  const { isAuthenticated } = auth;
 
-        return <MaterialList items={data.order.items} orderID={id} />;
-      }}
-    </Query>
+  return (
+    <>
+      {isAuthenticated() && (
+        <Query query={FIND_ORDER} variables={{ id }}>
+          {({ loading, error, data }) => {
+            if (loading) return null;
+            if (error) return `Error! ${error.message}`;
+
+            return <MaterialList items={data.order.items} orderID={id} />;
+          }}
+        </Query>
+      )}
+    </>
   );
 };
 

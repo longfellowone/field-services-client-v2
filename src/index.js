@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import ApolloClient from 'apollo-boost';
 import { ApolloProvider } from 'react-apollo';
@@ -48,14 +48,33 @@ const client = new ApolloClient({
     }
     if (networkError) {
       console.log(`[Network error]: ${networkError}`);
-      // if (networkError.statusCode === 401 || 403) {
-      //   history.push('/');
-      // }
+      if (networkError.statusCode === 401) {
+        // Also need to deal with 403
+        // history.push('/');
+      }
     }
   },
 });
 
 const App = () => {
+  useEffect(() => {
+    // http://localhost:3000/cf510766-faf7-415e-a067-0c5ae5cb2ae8
+    // history.location.pathname
+    // if (localStorage.getItem('isLoggedIn')) auth.renewSession(history.location.pathname);
+    (async () => {
+      try {
+        await auth.silentAuth();
+        history.push(history.location.pathname);
+      } catch (err) {
+        if (!err) {
+          // ignore as this is not a callback
+          return;
+        }
+        console.log(err);
+      }
+    })();
+  }, []);
+
   return (
     <ApolloProvider client={client}>
       <Router history={history}>
@@ -68,6 +87,8 @@ const App = () => {
                 return <Callback {...props} />;
               }}
             />
+            {/* <Route path="/order/:id" component={Order} /> */}
+            <Route path="/order/:id" render={props => <Order auth={auth} {...props} exact />} />
             <Route path="/order/:id" component={Order} />
             <Route path="/:id" render={props => <Orders auth={auth} {...props} />} />
             <Route path="/" render={props => <Dashboard auth={auth} {...props} exact />} />
