@@ -17,8 +17,6 @@ const Orders = ({ match, auth }) => {
   const { isAuthenticated } = auth;
   const id = match.params.id;
 
-  console.log('hi');
-
   return (
     <>
       {isAuthenticated() && (

@@ -17,7 +17,7 @@ import Callback from './Views/Callback';
 const AUTH_CONFIG = {
   domain: 'dev-vqglrbz9.auth0.com',
   clientId: '4Bl87j57GloRtm1GlyZhwEFA3jlDlv66',
-  callbackUrl: 'http://localhost:3000/callback',
+  callbackUrl: 'http://192.168.0.104:3000/callback',
   audience: 'http://192.168.0.104:8080/graphql',
 };
 
@@ -25,7 +25,7 @@ const auth = Auth({ AUTH_CONFIG });
 
 const handleAuthentication = ({ location }) => {
   if (/access_token|id_token|error/.test(location.hash)) {
-    auth.handleAuthentication();
+    auth.handleAuthentication(location);
   }
 };
 
@@ -48,8 +48,7 @@ const client = new ApolloClient({
     }
     if (networkError) {
       console.log(`[Network error]: ${networkError}`);
-      if (networkError.statusCode === 401) {
-        // Also need to deal with 403
+      if (networkError.statusCode === 401 || 403) {
         // history.push('/');
       }
     }
@@ -57,23 +56,12 @@ const client = new ApolloClient({
 });
 
 const App = () => {
+  const location = history.location.pathname;
+
   useEffect(() => {
-    // http://localhost:3000/cf510766-faf7-415e-a067-0c5ae5cb2ae8
-    // history.location.pathname
     // if (localStorage.getItem('isLoggedIn')) auth.renewSession(history.location.pathname);
-    (async () => {
-      try {
-        await auth.silentAuth();
-        history.push(history.location.pathname);
-      } catch (err) {
-        if (!err) {
-          // ignore as this is not a callback
-          return;
-        }
-        console.log(err);
-      }
-    })();
-  }, []);
+    auth.renewSession(location);
+  }, [location]);
 
   return (
     <ApolloProvider client={client}>
