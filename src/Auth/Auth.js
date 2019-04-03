@@ -30,7 +30,13 @@ const Auth = ({ AUTH_CONFIG }) => {
       }
     });
 
-  const getAccessToken = () => accessToken;
+  const getAccessToken = () => {
+    if (!accessToken) {
+      return '';
+    }
+    return 'Bearer ' + accessToken;
+  };
+
   const getIdToken = () => idToken;
 
   const getProfile = cb => {

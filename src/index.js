@@ -25,17 +25,16 @@ const auth = Auth({ AUTH_CONFIG });
 
 const handleAuthentication = ({ location }) => {
   if (/access_token|id_token|error/.test(location.hash)) {
-    auth.handleAuthentication(location);
+    auth.handleAuthentication();
   }
 };
 
 const client = new ApolloClient({
   uri: 'http://192.168.0.104:8080/graphql',
   request: async operation => {
-    const token = auth.getAccessToken();
     operation.setContext({
       headers: {
-        authorization: token ? `Bearer ${auth.getAccessToken()}` : '',
+        authorization: auth.getAccessToken(),
       },
     });
   },
