@@ -31,7 +31,9 @@ export const Search = ({ addItem }) => {
           console.log(error);
           return null;
         }
-        if (Object.entries(data).length === 0) return null;
+        // if (Object.entries(data).length === 0) return null;
+        // if (!data || !data.allPosts || !data.allPosts.length) return 'No posts'
+        if (!data.products) return null;
 
         // const handleKeyDown = e => {
         //   if (!menuOpen) return;
@@ -196,16 +198,16 @@ const Result = ({
   );
 };
 
-function replaceAt(indexArray, string) {
-  const newString = [...string];
-  const replaceValue = i =>
-    (newString[i] = (
-      <span style={{ fontWeight: 400 }} key={i}>
-        {newString[i]}
-      </span>
-    ));
-  indexArray.map(replaceValue);
-  return newString;
+function replaceAt(indexArray, [...string]) {
+  indexArray.map(
+    i =>
+      (string[i] = (
+        <span style={{ fontWeight: 400 }} key={i}>
+          {string[i]}
+        </span>
+      )),
+  );
+  return string;
 }
 
 // const Search = () => {

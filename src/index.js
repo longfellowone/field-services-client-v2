@@ -21,6 +21,8 @@ const AUTH_CONFIG = {
   audience: 'http://192.168.0.104:8080/graphql',
 };
 
+// date-fns
+
 const auth = Auth({ AUTH_CONFIG });
 
 const handleAuthentication = ({ location }) => {

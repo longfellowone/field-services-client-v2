@@ -49,6 +49,8 @@ const Auth = ({ AUTH_CONFIG }) => {
   };
 
   const setSession = authResult => {
+    console.log(authResult.accessToken);
+
     expiresAt = authResult.expiresIn * 1000 + new Date().getTime();
     accessToken = authResult.accessToken;
     idToken = authResult.idToken;
